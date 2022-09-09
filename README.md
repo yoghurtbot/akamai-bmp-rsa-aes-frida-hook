@@ -2,6 +2,9 @@
 # Akamai BMP - RSA Public Key Frida Hook
 This Frida script can be used to find the public RSA key used in the encryption process in Akamai BMP 3.3.0. Since version 3.3.0, Akamai uses a shared library to handle the encryption process, rather than in Java.
 
+The public key is encrypted inside the shared library, and a function called `rotate_string` decrypts it into the public key. This Frida scripts hooks into a function called `Crypto::RSAEncrypt` that takes the clear text RSA key as a parameter, and dumps it out.
+
+![](https://i.imgur.com/7z8RQlU.png)
 
 ## How to use the script
 > This script was tested on an Android ARM device. You will need to adjust the memory addresses for any other architectures. 
