@@ -8,7 +8,7 @@ function processJniOnLoad(libraryName) {
 	
 	//Find the actual address by subtracting the image base
 	const actualRsaEncryptAddress = membase.add(rsaEncryptAddr - ghidraImageBase);
-    	console.log("[+] Actual RSA Encrypt Address " + actualRsaEncryptAddress);
+    	console.log("[+] Actual RSAEncrypt Address " + actualRsaEncryptAddress);
 
 	Interceptor.attach(actualRsaEncryptAddress, {
 		onEnter: function(args) {
