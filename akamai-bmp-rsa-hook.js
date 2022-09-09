@@ -1,15 +1,14 @@
 function processJniOnLoad(libraryName) {
-	//The RSAEncrypt function isn't exported in the shared library, so we need to find it manually by it's memory address
 	const rsaEncryptAddr = 0x001a4258; //Address of the RSAEncrypt method, as found in Ghidra
 	const ghidraImageBase = 0x00100000; //Base image address
 
-	//Find the memory address of the bmp library
+	//RSAEncrypt Hook (encrypts the encryption keys)
     	const membase = Module.findBaseAddress(libraryName);
     	console.log("[+] Base address is " + membase);
 	
 	//Find the actual address by subtracting the image base
 	const actualRsaEncryptAddress = membase.add(rsaEncryptAddr - ghidraImageBase);
-    	console.log("[+] Actual RSAEncrypt Address " + actualRsaEncryptAddress);
+    	console.log("[+] Actual RSA Encrypt Address " + actualRsaEncryptAddress);
 
 	Interceptor.attach(actualRsaEncryptAddress, {
 		onEnter: function(args) {
@@ -19,6 +18,25 @@ function processJniOnLoad(libraryName) {
 		},
 		onLeave: function(retval) {
 			console.log("Leaving RSAEncrypt");
+		}
+	});
+	
+	
+	//AESEncrypt Hook (encrypts the sensor)
+	const aesEncryptAddr = 0x001a3ff4; //Address of the AESEncrypt method, as found in Ghidra
+    	const aesEncryptBase = Module.findBaseAddress(libraryName);
+    	console.log("[+] AESEncrypt Base address is " + aesEncryptBase);
+	const actualAesEncryptAddress = membase.add(aesEncryptAddr - ghidraImageBase);
+    	console.log("[+] Actual AESEncrypt Address " + actualAesEncryptAddress);
+	
+	Interceptor.attach(actualAesEncryptAddress, {
+		onEnter: function(args) {
+			console.log("Hooked AESEncrypt");
+			const plainSensor = Memory.readUtf8String(args[0]); //sensor is the first arg, and is type uchar *
+			console.log(plainSensor);
+		},
+		onLeave: function(retval) {
+			console.log("Leaving AESEncrypt");
 		}
 	});
 }
