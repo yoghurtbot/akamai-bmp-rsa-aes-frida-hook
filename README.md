@@ -11,7 +11,7 @@ This Frida script can be used to find the public RSA key used in the encryption 
 `frida -l "D:\akamai-bmp-rsa-hook.js" -f  com.ihg.apps.android -U`
 
 ## Output
-Below is an example of the output from the script (screenshot purposly cropped to stop you being lazy...)
+Below is an example of the output from the script (*screenshot purposly cropped to stop you being lazy...*)
 
 ![enter image description here](https://i.imgur.com/G0IWw1r.png)
 
