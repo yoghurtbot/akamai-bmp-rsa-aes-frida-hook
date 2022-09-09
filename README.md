@@ -1,6 +1,6 @@
 
 # Akamai BMP - RSA Public Key Frida Hook
-This Frida script can be used to find the public RSA key used in the encryption process in Akamai BMP 3.3.0.
+This Frida script can be used to find the public RSA key used in the encryption process in Akamai BMP 3.3.0. Since version 3.3.0, Akamai uses a shared library to handle the encryption process, rather than in Java.
 
 
 ## How to use the script
