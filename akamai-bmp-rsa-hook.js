@@ -3,12 +3,12 @@ function processJniOnLoad(libraryName) {
 	const ghidraImageBase = 0x00100000; //Base image address
 
 	//Find the memory address of the bmp library
-    const membase = Module.findBaseAddress(libraryName);
-    console.log("[+] Base address is " + membase);
+    	const membase = Module.findBaseAddress(libraryName);
+    	console.log("[+] Base address is " + membase);
 	
 	//Find the actual address by subtracting the image base
 	const actualRsaEncryptAddress = membase.add(rsaEncryptAddr - ghidraImageBase);
-    console.log("[+] Actual RSA Encrypt Address " + actualRsaEncryptAddress);
+    	console.log("[+] Actual RSA Encrypt Address " + actualRsaEncryptAddress);
 
 	Interceptor.attach(actualRsaEncryptAddress, {
 		onEnter: function(args) {
