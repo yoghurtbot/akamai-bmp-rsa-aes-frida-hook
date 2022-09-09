@@ -6,6 +6,8 @@ This Frida script can be used to find the public RSA key used in the encryption 
 ## How to use the script
 > This script was tested on an Android ARM device. You will need to adjust the memory addresses for any other architectures. 
 
+> This script assumes that you have already setup rooted and setup Frida on your Android device
+
 `frida -l "D:\akamai-bmp-rsa-hook.js" -f  com.ihg.apps.android -U`
 
 ## Output
