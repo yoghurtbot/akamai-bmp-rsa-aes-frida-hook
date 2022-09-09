@@ -1,4 +1,5 @@
 function processJniOnLoad(libraryName) {
+	//The RSAEncrypt function isn't exported in the shared library, so we need to find it manually by it's memory address
 	const rsaEncryptAddr = 0x001a4258; //Address of the RSAEncrypt method, as found in Ghidra
 	const ghidraImageBase = 0x00100000; //Base image address
 
