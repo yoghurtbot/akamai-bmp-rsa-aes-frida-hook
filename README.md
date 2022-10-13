@@ -11,10 +11,10 @@ The public key is encrypted inside the shared library, and a function called `ro
 ## How to use the script
 This script assumes that you have already rooted and installed Frida on your Android device.
 ```console
-$ frida -l "D:\akamai-bmp-rsa-hook.js" -f  com.ihg.apps.android -U
+$ frida -l "D:\akamai-bmp-rsa-hook.js" -f com.ihg.apps.android -U --no-pause
 ```
 
 ## Output
 Below is an example of the output from the script (*screenshot purposly cropped to stop you being lazy...*)
 
-![output](https://i.imgur.com/AHtNNfc.png)
+![output](https://i.imgur.com/FpmV2fm.png)
