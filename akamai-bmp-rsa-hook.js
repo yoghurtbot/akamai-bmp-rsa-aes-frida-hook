@@ -1,14 +1,27 @@
 function processJniOnLoad(libraryName) {
-	const rsaEncryptAddr = 0x001a4258; //Address of the RSAEncrypt method, as found in Ghidra
-	const ghidraImageBase = 0x00100000; //Base image address
+  const library = Process.getModuleByName(libraryName);
 
-	//RSAEncrypt Hook (encrypts the encryption keys)
-    	const membase = Module.findBaseAddress(libraryName);
-    	console.log("[+] Base address is " + membase);
-	
-	//Find the actual address by subtracting the image base
-	const actualRsaEncryptAddress = membase.add(rsaEncryptAddr - ghidraImageBase);
-    	console.log("[+] Actual RSA Encrypt Address " + actualRsaEncryptAddress);
+  let exports = library.enumerateExports();
+  let actualRsaEncryptAddress = null;
+  let actualAesEncryptAddress = null;
+  for (let i = 0; i  < exports.length; i ++) {
+    const element = exports[i];
+    if(element.name.includes("RSAEncrypt")) {
+      actualRsaEncryptAddress = element.address;
+    }
+    else if(element.name.includes("AESEncrypt")) {
+      actualAesEncryptAddress = element.address;
+    }
+  }
+
+  if(actualRsaEncryptAddress == null) {
+    throw("No RSAEncrypt found. Try adjusting your filter.");
+  }
+  if(actualAesEncryptAddress == null) {
+    throw("No AESEncrypt found. Try adjusting your filter.");
+  }
+
+  console.log("[+] Actual RSA Encrypt Address " + actualRsaEncryptAddress);
 
 	Interceptor.attach(actualRsaEncryptAddress, {
 		onEnter: function(args) {
@@ -23,22 +36,18 @@ function processJniOnLoad(libraryName) {
 	
 	
 	//AESEncrypt Hook (encrypts the sensor)
-	const aesEncryptAddr = 0x001a3ff4; //Address of the AESEncrypt method, as found in Ghidra
-    	const aesEncryptBase = Module.findBaseAddress(libraryName);
-    	console.log("[+] AESEncrypt Base address is " + aesEncryptBase);
-	const actualAesEncryptAddress = membase.add(aesEncryptAddr - ghidraImageBase);
-    	console.log("[+] Actual AESEncrypt Address " + actualAesEncryptAddress);
-	
-	Interceptor.attach(actualAesEncryptAddress, {
-		onEnter: function(args) {
-			console.log("Hooked AESEncrypt");
-			const plainSensor = Memory.readUtf8String(args[0]); //sensor is the first arg, and is type uchar *
-			console.log(plainSensor);
-		},
-		onLeave: function(retval) {
-			console.log("Leaving AESEncrypt");
-		}
-	});
+  console.log("[+] Actual AESEncrypt Address " + actualAesEncryptAddress);
+
+  Interceptor.attach(actualAesEncryptAddress, {
+    onEnter: function(args) {
+      console.log("Hooked AESEncrypt");
+      const plainSensor = Memory.readUtf8String(args[0]); //sensor is the first arg, and is type uchar *
+      console.log(plainSensor);
+    },
+    onLeave: function(retval) {
+      console.log("Leaving AESEncrypt");
+    }
+  });
 }
 
 function waitForLibLoading(libraryName) {
